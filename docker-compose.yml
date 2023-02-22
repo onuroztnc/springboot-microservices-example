@@ -34,8 +34,8 @@ services:
       - "27017:27017"
     expose:
       - "27017"
-    volumes:
-      - ./mongo-data:/data/db
+    networks:
+      - springboot-microservices
   ## Eureka Server
   discovery-server:
     image: discovery-server
@@ -93,8 +93,6 @@ services:
       - api-gateway
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    links:
-      - mongo:mongo
 
   user-service:
     image: user-service
