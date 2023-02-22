@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   mysqldb:
     image: mysql
@@ -26,14 +26,16 @@ services:
       - '5432'
     networks:
       - springboot-microservices
-  mongodb:
-    container_name: mongodb
-    image: mongo
+  mongo:
+    container_name: mongo
+    image: mongo:4.4.14-rc0-focal
     restart: always
     ports:
       - "27017:27017"
     expose:
       - "27017"
+    volumes:
+      - ./mongo-data:/data/db
   ## Eureka Server
   discovery-server:
     image: discovery-server
@@ -86,11 +88,13 @@ services:
     networks:
       - springboot-microservices
     depends_on:
-      - mongodb
+      - mongo
       - discovery-server
       - api-gateway
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    links:
+      - mongo:mongo
 
   user-service:
     image: user-service
